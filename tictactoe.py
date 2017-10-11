@@ -1,6 +1,8 @@
-import os
+import os,sys
+
 def clear():
     os.system( 'cls' )
+
 def print_board():
     global tttboard
     for row in tttboard:
@@ -8,23 +10,24 @@ def print_board():
 
 def update_board_pos(pos,player):
     global tttboard
+    board_pos = [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)]
     if player == '1':
-        tttboard[pos[0]][pos[1]] = 'O'
+        tttboard[board_pos[pos-1][0]][board_pos[pos-1][1]] = 'O'
     else:
-        tttboard[pos[0]][pos[1]] = 'X'
+        tttboard[board_pos[pos-1][0]][board_pos[pos-1][1]] = 'X'
     clear()
     print_board()
 
 def win_check():
     global tttboard
-    return ((tttboard[0][0]==tttboard[0][1]==tttboard[0][2]!='-')or
-            (tttboard[0][0]==tttboard[1][0]==tttboard[2][0]!='-')or
-            (tttboard[0][0]==tttboard[1][1]==tttboard[2][2]!='-')or
-            (tttboard[0][1]==tttboard[1][1]==tttboard[2][1]!='-')or
-            (tttboard[0][2]==tttboard[1][2]==tttboard[2][2]!='-')or
-            (tttboard[0][2]==tttboard[1][1]==tttboard[2][0]!='-')or
-            (tttboard[1][0]==tttboard[1][1]==tttboard[1][2]!='-')or
-            (tttboard[2][0]==tttboard[2][1]==tttboard[2][2]!='-'))
+    return ((tttboard[0][0]==tttboard[0][1]==tttboard[0][2])or
+            (tttboard[0][0]==tttboard[1][0]==tttboard[2][0])or
+            (tttboard[0][0]==tttboard[1][1]==tttboard[2][2])or
+            (tttboard[0][1]==tttboard[1][1]==tttboard[2][1])or
+            (tttboard[0][2]==tttboard[1][2]==tttboard[2][2])or
+            (tttboard[0][2]==tttboard[1][1]==tttboard[2][0])or
+            (tttboard[1][0]==tttboard[1][1]==tttboard[1][2])or
+            (tttboard[2][0]==tttboard[2][1]==tttboard[2][2]))
 
 def board_full():
     global avail_pos
@@ -33,13 +36,17 @@ def board_full():
     else:
         return False
 
-tttboard = [['-','-','-'],['-','-','-'],['-','-','-']]
-avail_pos = [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)]
-player = '1'
+tttboard = []
+avail_pos = []
+player = '0'
+
 def play_game():
     global player
     global tttboard
     global avail_pos
+    player = '1'
+    tttboard = [['1','2','3'],['4','5','6'],['7','8','9']]
+    avail_pos = [1,2,3,4,5,6,7,8,9]
     print_board()
     print("Who want to play first Player(1 or 2)?:")
     if input() == '1':
@@ -47,10 +54,10 @@ def play_game():
     else:
         player = '2'
     while True:
-        print("player",player," chance: (type 99,99 to quit)")
-        inp = tuple(int(x.strip()) for x in input().split(','))
-        if inp == (99,99):
-            break
+        inp = int(input("player %s chance: (type 99 to quit)"%player))
+        clear()
+        if inp == 99 :
+            sys.exit(0)
         if inp in avail_pos:
             update_board_pos(inp,player)
             avail_pos.pop(avail_pos.index(inp))
